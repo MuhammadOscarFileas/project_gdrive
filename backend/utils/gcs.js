@@ -7,9 +7,12 @@ if (!base64Creds) {
   throw new Error("Missing GOOGLE_APPLICATION_CREDENTIALS_BASE64 env var");
 }
 
-const credentials = JSON.parse(
-  Buffer.from(base64Creds, "base64").toString("utf-8")
-);
+const jsonString = Buffer.from(base64Creds, 'base64').toString('utf-8');
+const credentials = JSON.parse(jsonString);
+
+// const credentials = JSON.parse(
+//   Buffer.from(base64Creds, "base64").toString("utf-8")
+// );
 
 // Inisialisasi Storage client dengan credentials dari base64
 const storage = new Storage({
