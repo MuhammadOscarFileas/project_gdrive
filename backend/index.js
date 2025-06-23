@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+  origin: "https://fe-b-drive-dot-f-07-450706.uc.r.appspot.com",
   credentials: true
 }));
 app.use(express.json());
