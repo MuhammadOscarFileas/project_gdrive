@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
 try {
   app.use(cors({
-    origin: "https://fe-b-drive-dot-f-07-450706.uc.r.appspot.com/",
+    origin: "https://fe-b-drive-dot-f-07-450706.uc.r.appspot.com",
     credentials: true
   }));
 } catch (err) {
