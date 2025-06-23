@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 
-const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET || 'access_secret';
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 
 export const verifyToken = (req, res, next)=>{
     const authHeader = req.headers['authorization'];
