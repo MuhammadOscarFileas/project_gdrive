@@ -373,7 +373,6 @@
               <input type="password" id="login-password" placeholder="Password" required />
             </div>
             <button type="submit">LOGIN</button>
-            <div class="link">Belum punya akun? <a href="#" onclick="showTab('register');return false;">Sign Up</a></div>
           </form>
         </div>
         <div id="register-form-tab" style="display:none">
@@ -388,7 +387,6 @@
               <input type="password" id="register-password" placeholder="Password" required />
             </div>
             <button type="submit">SIGN UP</button>
-            <div class="link">Sudah punya akun? <a href="#" onclick="showTab('login');return false;">Login</a></div>
           </form>
         </div>
         <div class="message" id="auth-message"></div>
@@ -448,7 +446,7 @@
       setTimeout(() => { el.style.display = 'none'; }, 4000);
     }
 
-    // Auth
+    // Author lol lemao
     document.getElementById('register-form').onsubmit = function(e) { register(e); };
     document.getElementById('login-form').onsubmit = function(e) { login(e); };
 
@@ -457,7 +455,7 @@
       const email = document.getElementById('register-email').value.trim().toLowerCase();
       const password = document.getElementById('register-password').value;
       try {
-        const res = await fetch(`${BASE_URL}/users/register`, {
+        const res = await fetch(`${BASE_URL}/api/users/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -479,7 +477,7 @@
       const email = document.getElementById('login-email').value.trim().toLowerCase();
       const password = document.getElementById('login-password').value;
       try {
-        const res = await fetch(`${BASE_URL}/users/login`, {
+        const res = await fetch(`${BASE_URL}/api/users/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -501,7 +499,7 @@
 
     async function logout() {
       try {
-        await fetch(`${BASE_URL}/users/logout`, {
+        await fetch(`${BASE_URL}/api/users/logout`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${accessToken}` }
         });
@@ -534,7 +532,7 @@
       const grid = document.getElementById('file-grid');
       grid.innerHTML = '<div style="color:#888;text-align:center;width:100%;padding:2.5rem 0;">Loading...</div>';
       try {
-        const res = await fetch(`${BASE_URL}/files`, {
+        const res = await fetch(`${BASE_URL}/api/files`, {
           headers: { 'Authorization': `Bearer ${accessToken}` }
         });
         if (res.status === 401 || res.status === 403) { logout(); return; }
@@ -627,7 +625,7 @@
       const newName = inp.value.trim();
       if (!newName) return;
       try {
-        const res = await fetch(`${BASE_URL}/files/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/files/${id}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -665,7 +663,7 @@
       const formData = new FormData();
       formData.append('file', file);
       try {
-        const res = await fetch(`${BASE_URL}/files`, {
+        const res = await fetch(`${BASE_URL}/api/files`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${accessToken}` },
           body: formData
@@ -686,7 +684,7 @@
     // Preview
     async function previewFile(id) {
       try {
-        const res = await fetch(`${BASE_URL}/files/preview/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/files/preview/${id}`, {
           headers: { 'Authorization': `Bearer ${accessToken}` }
         });
         const data = await res.json();
@@ -716,7 +714,7 @@
     // Download
     async function downloadFile(id) {
       try {
-        const res = await fetch(`${BASE_URL}/files/download/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/files/download/${id}`, {
           headers: { 'Authorization': `Bearer ${accessToken}` },
           redirect: 'follow'
         });
@@ -735,7 +733,7 @@
     async function deleteFile(id) {
       if (!confirm('Yakin ingin menghapus file ini?')) return;
       try {
-        const res = await fetch(`${BASE_URL}/files/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/files/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${accessToken}` }
         });
