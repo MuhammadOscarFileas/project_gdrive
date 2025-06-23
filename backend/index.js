@@ -15,10 +15,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cookieParser());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-  credentials: true
-}));
+try {
+  app.use(cors({
+    origin: "https://fe-b-drive-dot-f-07-450706.uc.r.appspot.com/",
+    credentials: true
+  }));
+} catch (err) {
+  console.error("❌ Failed to initialize CORS:", err);
+}
+
 app.use(express.json());
 
 // Routes
