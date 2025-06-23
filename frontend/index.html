@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drive KW - Demo Tanpa API</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    body{
+      min-height:100vh;
+      background:#f5f7fa;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      color:#222;
+    }
+    header {
+      background: #1976d2;
+      color: #fff;
+      padding: 1rem 2rem;
+      width:100vw;
+      box-sizing:border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position:fixed;
+      top:0;left:0;
+      z-index:10;
+    }
+    .header-left {display:flex;align-items:center;gap:1rem;}
+    .header-logo {font-weight:700;font-size:1.3rem;letter-spacing:1px;}
+    .header-search {flex:1;display:flex;justify-content:center;}
+    .header-search input {
+      width:320px;max-width:60vw;padding:0.5rem 1.2rem;border-radius:20px;border:none;font-size:1rem;
+      background:#f5f7fa;color:#222;box-shadow:0 1px 4px rgba(0,0,0,0.04);
+      outline:none;
+    }
+    .header-user {font-size:1rem;display:flex;align-items:center;gap:1.2rem;}
+    .header-user span {font-weight:500;}
+    .header-user button {
+      margin:0;
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      border-radius:5px;
+      padding:0.5rem 1.2rem;
+      font-size:1rem;
+      font-weight:600;
+      letter-spacing:0.5px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.04);
+      transition:background 0.18s, color 0.18s;
+      cursor:pointer;
+    }
+    .header-user button:hover {
+      background:#1565c0;
+      color:#fff;
+    }
+    .container {margin-top:90px;width:100vw;max-width:1400px;display:flex;flex-direction:column;align-items:center;}
+    .card {
+      position: relative;
+      width: 370px;
+      background: #fff;
+      padding: 40px 35px 30px;
+      box-sizing: border-box;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      margin-bottom:2rem;
+      transition:box-shadow 0.2s;
+    }
+    .card.main-card {
+      width: 100%;
+      max-width: 1100px;
+      padding: 18px 10px 10px 10px;
+      margin-bottom: 0;
+      background:transparent;
+      border:none;
+      box-shadow:none;
+    }
+    .main-title {
+      font-size: 1.35rem;
+      color: #222;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .upload-bar {
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      margin-bottom:18px;
+      width:100%;
+      justify-content:flex-start;
+    }
+    .upload-bar input[type="file"] {
+      font-size:0.98rem;
+      background:#f5f7fa;
+      border-radius:4px;
+      border:1px solid #e0e0e0;
+      padding:4px 6px;
+      width:auto;
+      outline:none;
+      cursor:pointer;
+      transition:box-shadow 0.15s,border 0.15s;
+    }
+    .upload-bar input[type="file"]::-webkit-file-upload-button {
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      border-radius:5px;
+      padding:0.5rem 1.1rem;
+      font-size:1rem;
+      font-family:'Poppins',sans-serif;
+      font-weight:500;
+      cursor:pointer;
+      transition:background 0.18s;
+    }
+    .upload-bar input[type="file"]::file-selector-button {
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      border-radius:5px;
+      padding:0.5rem 1.1rem;
+      font-size:1rem;
+      font-family:'Poppins',sans-serif;
+      font-weight:500;
+      cursor:pointer;
+      transition:background 0.18s;
+    }
+    .upload-bar input[type="file"]:hover::-webkit-file-upload-button,
+    .upload-bar input[type="file"]:focus::-webkit-file-upload-button,
+    .upload-bar input[type="file"]:hover::file-selector-button,
+    .upload-bar input[type="file"]:focus::file-selector-button {
+      background:#1565c0;
+    }
+    .upload-bar button {
+      margin-top:0;
+      height:40px;
+      padding:0 18px;
+      font-size:1rem;
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      border-radius:5px;
+      font-weight:600;
+      letter-spacing:0.5px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.04);
+      transition:background 0.18s, color 0.18s;
+    }
+    .upload-bar button:hover {
+      background:#1565c0;
+      color:#fff;
+    }
+    .message{margin:0.7rem 0 1.2rem 0;padding:0.8rem 1rem;border-radius:4px;background:#e3f2fd;color:#1976d2;font-weight:500;display:none;}
+    .message.error{background:#ffebee;color:#d32f2f;}
+    .file-grid {
+      display:flex;
+      flex-wrap:wrap;
+      gap:1.1rem;
+      width:100%;
+      margin:0.2rem 0 0.5rem 0;
+      padding:0 1vw;
+      justify-content:flex-start;
+    }
+    .file-card {
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.09);
+      padding:1.2rem 1.5rem 1rem 1.5rem;
+      width:320px;
+      max-width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      min-height:170px;
+      position:relative;
+      transition:box-shadow 0.18s;
+      overflow:hidden;
+      margin:0;
+    }
+    .file-card:hover {box-shadow:0 4px 18px rgba(0,0,0,0.13);}
+    .file-preview {
+      width:100%;
+      min-height:70px;
+      max-height:90px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:0.7rem;
+      overflow:hidden;
+    }
+    .file-preview img, .file-preview iframe {
+      max-width:100%;
+      max-height:90px;
+      border-radius:6px;
+      background:#f5f7fa;
+    }
+    .file-icon {
+      font-size:2.5rem;
+      color:#1976d2;
+      background:#e3f2fd;
+      border-radius:8px;
+      padding:0.4rem 0.7rem;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .file-name {
+      font-weight:600;
+      font-size:1.05rem;
+      margin-bottom:0.2rem;
+      color:#222;
+      word-break:break-all;
+      width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .file-info {
+      font-size:0.97rem;
+      color:#333;
+      margin-bottom:0.5rem;
+      width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      display:block;
+      font-weight:500;
+    }
+    .file-date {
+      font-size:0.91rem;
+      color:#1976d2;
+      font-weight:600;
+      margin-bottom:0.2rem;
+      letter-spacing:0.2px;
+      display:block;
+    }
+    .file-actions {
+      display:flex;
+      gap:0.3rem;
+      margin-top:auto;
+      width:100%;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+    }
+    .file-actions button {
+      flex:1;
+      padding:0.35rem 0.2rem;
+      font-size:0.93rem;
+      border-radius:5px;
+      background:#f5f7fa;
+      color:#1976d2;
+      border:1px solid #e0e0e0;
+      font-weight:500;
+      transition:background 0.15s,color 0.15s;
+      cursor:pointer;
+      margin-bottom:0.2rem;
+      margin-right:0.2rem;
+    }
+    .file-actions button:hover {
+      background:#1976d2;
+      color:#fff;
+    }
+    @media (max-width:1100px){
+      .container{max-width:99vw;}
+      .card.main-card{max-width:99vw;}
+      .file-grid{padding:0 0.5vw;}
+    }
+    @media (max-width:700px){
+      .container{padding:0.5rem;}
+      .card,.card.main-card{width:99vw;padding:6px 1vw 8px;}
+      .main-title{font-size:1.1rem;}
+      .file-grid{gap:0.3rem;padding:0 0.5vw;justify-content:flex-start;}
+      .file-card{padding:0.7rem 0.3rem 0.5rem 0.3rem;min-height:90px;width:98vw;max-width:98vw;}
+      .file-preview{min-height:24px;max-height:40px;}
+    }
+    /* Login/Register Card Style */
+    .auth-section {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      width:100vw;
+      min-height:100vh;
+      position:fixed;
+      top:0;left:0;
+      background:rgba(245,247,250,0.98);
+      z-index:100;
+    }
+    .auth-section .card {
+      margin:auto;
+      position:relative;
+    }
+    .form-switch {display:flex;justify-content:center;margin-bottom:10px;}
+    .form-switch button {
+      background:none;
+      border:none;
+      color:#868686;
+      font-size:16px;
+      margin:0 10px;
+      cursor:pointer;
+      font-weight:600;
+      padding:0 0 3px 0;
+      border-bottom:2px solid transparent;
+      transition:color 0.2s,border 0.2s;
+    }
+    .form-switch .active {color:#1976d2;border-bottom:2px solid #1976d2;}
+    .auth-section .text{font-size:30px;color:#222;font-weight:600;letter-spacing:2px;margin-bottom:10px;text-align:center;}
+    .auth-section form{margin-top:20px;}
+    .auth-section .field{margin-top:20px;display:flex;align-items:center;}
+    .auth-section .field .fas{
+      height:50px;width:50px;color:#868686;font-size:20px;line-height:50px;
+      border:1px solid #ccc;border-right:none;border-radius:5px 0 0 5px;
+      background:linear-gradient(#f5f7fa,#e0e0e0);display:flex;align-items:center;justify-content:center;
+    }
+    .auth-section .field input, .auth-section form button{
+      height:50px;width:100%;outline:none;font-size:19px;color:#222;padding:0 15px;
+      border-radius:0 5px 5px 0;border:1px solid #ccc;caret-color:#1976d2;
+      background:linear-gradient(#fff,#f5f7fa);
+      transition:box-shadow 0.2s,background 0.2s;
+    }
+    .auth-section input:focus{
+      color:#1976d2;
+      box-shadow:0 0 5px rgba(25,118,210,.15),inset 0 0 5px rgba(25,118,210,.08);
+      background:linear-gradient(#f5faff,#eaf0fa);
+    }
+    .auth-section form button{
+      margin-top:30px;border-radius:5px!important;font-weight:600;letter-spacing:1px;cursor:pointer;
+      background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;font-size:1rem;transition:background 0.2s, color 0.2s;
+    }
+    .auth-section form button:hover{
+      color:#1976d2;background:#e3f2fd;border:1.5px solid #1976d2;
+    }
+    .auth-section .link{margin-top:25px;color:#868686;}
+    .auth-section .link a{color:#1976d2;text-decoration:none;}
+    .auth-section .link a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <span class="header-logo">Drive KW (Demo)</span>
+    </div>
+    <div class="header-search">
+      <input type="text" id="search-input" placeholder="Cari file..." oninput="searchFiles()" />
+    </div>
+    <div class="header-user" id="user-info" style="display:none">
+      <span id="user-email"></span>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+  <div class="container">
+    <!-- Auth Section -->
+    <div class="auth-section active" id="auth-section">
+      <div class="card">
+        <div class="form-switch">
+          <button id="login-tab" class="active" onclick="showTab('login');return false;">Login</button>
+          <button id="register-tab" onclick="showTab('register');return false;">Sign Up</button>
+        </div>
+        <div id="login-form-tab">
+          <div class="text">LOGIN</div>
+          <form id="login-form" autocomplete="off">
+            <div class="field">
+              <div class="fas fa-envelope"></div>
+              <input type="email" id="login-email" placeholder="Email" required />
+            </div>
+            <div class="field">
+              <div class="fas fa-lock"></div>
+              <input type="password" id="login-password" placeholder="Password" required />
+            </div>
+            <button type="submit">LOGIN</button>
+            <div class="link">Belum punya akun? <a href="#" onclick="showTab('register');return false;">Sign Up</a></div>
+          </form>
+        </div>
+        <div id="register-form-tab" style="display:none">
+          <div class="text">SIGN UP</div>
+          <form id="register-form" autocomplete="off">
+            <div class="field">
+              <div class="fas fa-envelope"></div>
+              <input type="email" id="register-email" placeholder="Email" required />
+            </div>
+            <div class="field">
+              <div class="fas fa-lock"></div>
+              <input type="password" id="register-password" placeholder="Password" required />
+            </div>
+            <button type="submit">SIGN UP</button>
+            <div class="link">Sudah punya akun? <a href="#" onclick="showTab('login');return false;">Login</a></div>
+          </form>
+        </div>
+        <div class="message" id="auth-message"></div>
+      </div>
+    </div>
+    <!-- Main Section -->
+    <div class="main-section" id="main-section">
+      <div class="card main-card">
+        <div class="main-title">File Storage</div>
+        <div class="upload-bar">
+          <form id="upload-form" onsubmit="uploadFile(event)">
+            <input type="file" id="file-input" required />
+            <button type="submit">Upload</button>
+          </form>
+          <button onclick="refreshFiles()">Refresh</button>
+        </div>
+        <div class="message" id="main-message"></div>
+        <div class="file-grid" id="file-grid"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Preview -->
+  <div id="preview-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:1000;">
+    <div style="background:#fff;padding:1.5rem;border-radius:8px;max-width:90vw;max-height:90vh;overflow:auto;position:relative;">
+      <button onclick="closePreview()" style="position:absolute;top:10px;right:10px;background:#d32f2f;color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.2rem;cursor:pointer;">&times;</button>
+      <div id="preview-content"></div>
+    </div>
+  </div>
+  <script>
+    // API config
+    const BASE_URL = 'https://api-bdrive-23024569990.us-central1.run.app';
+    let accessToken = localStorage.getItem('accessToken') || '';
+    let currentUser = localStorage.getItem('userEmail') || '';
+
+    // UI Tab Auth
+    function showTab(tab) {
+      if(tab==='login'){
+        document.getElementById('login-tab').classList.add('active');
+        document.getElementById('register-tab').classList.remove('active');
+        document.getElementById('login-form-tab').style.display = 'block';
+        document.getElementById('register-form-tab').style.display = 'none';
+      }else{
+        document.getElementById('login-tab').classList.remove('active');
+        document.getElementById('register-tab').classList.add('active');
+        document.getElementById('login-form-tab').style.display = 'none';
+        document.getElementById('register-form-tab').style.display = 'block';
+      }
+      document.getElementById('auth-message').style.display = 'none';
+    }
+
+    // Show message
+    function showMessage(id, msg, error=false) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = 'message' + (error ? ' error' : '');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 4000);
+    }
+
+    // Auth
+    document.getElementById('register-form').onsubmit = function(e) { register(e); };
+    document.getElementById('login-form').onsubmit = function(e) { login(e); };
+
+    async function register(e) {
+      e.preventDefault();
+      const email = document.getElementById('register-email').value.trim().toLowerCase();
+      const password = document.getElementById('register-password').value;
+      try {
+        const res = await fetch(`${BASE_URL}/users/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.status === 201) {
+          showMessage('auth-message', 'Registrasi berhasil, silakan login!');
+          showTab('login');
+        } else {
+          showMessage('auth-message', data.msg || 'Registrasi gagal', true);
+        }
+      } catch (err) {
+        showMessage('auth-message', 'Registrasi gagal', true);
+      }
+    }
+
+    async function login(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const password = document.getElementById('login-password').value;
+      try {
+        const res = await fetch(`${BASE_URL}/users/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.status === 200 && data.accessToken) {
+          accessToken = data.accessToken;
+          currentUser = data.user.email;
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('userEmail', currentUser);
+          showMain();
+        } else {
+          showMessage('auth-message', data.msg || 'Login gagal', true);
+        }
+      } catch (err) {
+        showMessage('auth-message', 'Login gagal', true);
+      }
+    }
+
+    async function logout() {
+      try {
+        await fetch(`${BASE_URL}/users/logout`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+      } catch {}
+      accessToken = '';
+      currentUser = '';
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userEmail');
+      document.getElementById('user-info').style.display = 'none';
+      document.getElementById('main-section').classList.remove('active');
+      document.getElementById('main-section').style.display = 'none';
+      document.getElementById('auth-section').classList.add('active');
+      document.getElementById('auth-section').style.display = 'block';
+    }
+
+    function showMain() {
+      document.getElementById('auth-section').classList.remove('active');
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('main-section').classList.add('active');
+      document.getElementById('main-section').style.display = 'flex';
+      document.getElementById('user-info').style.display = 'inline-block';
+      document.getElementById('user-email').textContent = currentUser;
+      refreshFiles();
+    }
+
+    // File List
+    let searchQuery = '';
+    let renamingId = null;
+    async function refreshFiles() {
+      const grid = document.getElementById('file-grid');
+      grid.innerHTML = '<div style="color:#888;text-align:center;width:100%;padding:2.5rem 0;">Loading...</div>';
+      try {
+        const res = await fetch(`${BASE_URL}/files`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        if (res.status === 401 || res.status === 403) { logout(); return; }
+        const data = await res.json();
+        let userFiles = (data.files || []).filter(f => f.filename.toLowerCase().includes(searchQuery));
+        if (userFiles.length === 0) {
+          grid.innerHTML = '<div style="color:#888;text-align:center;width:100%;padding:2.5rem 0;">Belum ada file.</div>';
+          return;
+        }
+        grid.innerHTML = '';
+        userFiles.forEach(file => {
+          let preview = '';
+          if (file.mimetype && file.mimetype.startsWith('image/')) {
+            preview = `<span class='file-icon'><i class='fas fa-file-image'></i></span>`;
+          } else if (file.mimetype === 'application/pdf') {
+            preview = `<span class='file-icon'><i class='fas fa-file-pdf'></i></span>`;
+          } else if (file.mimetype && file.mimetype.startsWith('video/')) {
+            preview = `<span class='file-icon'><i class='fas fa-file-video'></i></span>`;
+          } else if (file.mimetype && file.mimetype.startsWith('audio/')) {
+            preview = `<span class='file-icon'><i class='fas fa-file-audio'></i></span>`;
+          } else if (file.mimetype && file.mimetype.includes('word')) {
+            preview = `<span class='file-icon'><i class='fas fa-file-word'></i></span>`;
+          } else if (file.mimetype && file.mimetype.includes('excel')) {
+            preview = `<span class='file-icon'><i class='fas fa-file-excel'></i></span>`;
+          } else if (file.mimetype && file.mimetype.includes('powerpoint')) {
+            preview = `<span class='file-icon'><i class='fas fa-file-powerpoint'></i></span>`;
+          } else if (file.mimetype && (file.mimetype.includes('zip') || file.mimetype.includes('rar'))) {
+            preview = `<span class='file-icon'><i class='fas fa-file-archive'></i></span>`;
+          } else {
+            preview = `<span class='file-icon'><i class='fas fa-file'></i></span>`;
+          }
+          // Ekstensi file
+          let ext = file.filename.split('.').pop().toLowerCase();
+          if(ext.length > 6) ext = ext.slice(0,6)+'…';
+          // Format tanggal singkat
+          const d = new Date(file.createdAt || file.uploadedAt);
+          const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+          const tgl = `${d.getDate().toString().padStart(2,'0')} ${monthNames[d.getMonth()]} ${d.getFullYear()}, ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+          let info = `${formatSize(file.size)} · .${ext}`;
+          let renameForm = '';
+          if (renamingId === file.id) {
+            renameForm = `
+              <form class="rename-form" onsubmit="saveRename(event, '${file.id}')" style="width:100%;margin-bottom:0.4rem;display:flex;gap:0.3rem;align-items:center;">
+                <input type="text" id="rename-input-${file.id}" value="${file.filename}" style="flex:1;padding:0.4rem 0.6rem;font-size:1rem;border:1.5px solid #1976d2;border-radius:5px;outline:none;" autocomplete="off" />
+                <button type="submit" style="background:#1976d2;color:#fff;padding:0.4rem 1.1rem;font-size:1rem;border-radius:5px;border:none;font-weight:600;">Save</button>
+                <button type="button" onclick="cancelRename()" style="background:#eee;color:#1976d2;padding:0.4rem 1.1rem;font-size:1rem;border-radius:5px;border:none;font-weight:600;">Cancel</button>
+              </form>
+            `;
+          }
+          grid.innerHTML += `
+            <div class="file-card">
+              <div class="file-preview">${preview}</div>
+              ${renameForm || `<div class="file-name" title="${file.filename}">${file.filename}</div>`}
+              <span class="file-date">${tgl}</span>
+              <div class="file-info">${info}</div>
+              <div class="file-actions">
+                <button onclick="previewFile('${file.id}')">Preview</button>
+                <button onclick="downloadFile('${file.id}')">Download</button>
+                ${renamingId === file.id ? '' : `<button onclick="startRename('${file.id}')">Rename</button>`}
+                <button onclick="deleteFile('${file.id}')">Delete</button>
+              </div>
+            </div>
+          `;
+        });
+        if (renamingId) {
+          setTimeout(() => {
+            const inp = document.getElementById('rename-input-' + renamingId);
+            if (inp) { inp.focus(); inp.select(); }
+          }, 50);
+        }
+      } catch (err) {
+        grid.innerHTML = '<div style="color:#d32f2f;text-align:center;width:100%;padding:2.5rem 0;">Gagal mengambil file.</div>';
+      }
+    }
+    function searchFiles() {
+      searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+      refreshFiles();
+    }
+    function startRename(id) {
+      renamingId = id;
+      refreshFiles();
+    }
+    function cancelRename() {
+      renamingId = null;
+      refreshFiles();
+    }
+    async function saveRename(e, id) {
+      e.preventDefault();
+      const inp = document.getElementById('rename-input-' + id);
+      const newName = inp.value.trim();
+      if (!newName) return;
+      try {
+        const res = await fetch(`${BASE_URL}/files/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ filename: newName })
+        });
+        const data = await res.json();
+        if (res.status === 200) {
+          renamingId = null;
+          showMessage('main-message', 'Nama file berhasil diubah!');
+          refreshFiles();
+        } else {
+          showMessage('main-message', data.msg || 'Gagal rename', true);
+        }
+      } catch (err) {
+        showMessage('main-message', 'Gagal rename', true);
+      }
+    }
+
+    // Format file size
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+      if (bytes < 1024*1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB';
+      return (bytes/1024/1024/1024).toFixed(1) + ' GB';
+    }
+
+    // Upload
+    async function uploadFile(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('file-input');
+      if (!fileInput.files.length) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch(`${BASE_URL}/files`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${accessToken}` },
+          body: formData
+        });
+        const data = await res.json();
+        if (res.status === 201) {
+          showMessage('main-message', 'File berhasil diupload!');
+          fileInput.value = '';
+          refreshFiles();
+        } else {
+          showMessage('main-message', data.msg || 'Upload gagal', true);
+        }
+      } catch (err) {
+        showMessage('main-message', 'Upload gagal', true);
+      }
+    }
+
+    // Preview
+    async function previewFile(id) {
+      try {
+        const res = await fetch(`${BASE_URL}/files/preview/${id}`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        const data = await res.json();
+        const modal = document.getElementById('preview-modal');
+        const content = document.getElementById('preview-content');
+        content.innerHTML = '';
+        if (res.status === 200 && data.previewUrl) {
+          if (data.previewUrl.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)) {
+            content.innerHTML = `<img src="${data.previewUrl}" alt="Preview" style="max-width:80vw;max-height:70vh;" />`;
+          } else if (data.previewUrl.match(/\.(pdf)$/i)) {
+            content.innerHTML = `<iframe src="${data.previewUrl}" style="width:80vw;height:70vh;border:none;"></iframe>`;
+          } else {
+            content.innerHTML = `<a href="${data.previewUrl}" target="_blank">Open File</a>`;
+          }
+        } else {
+          content.innerHTML = `<span>Preview tidak tersedia. Silakan download file.</span>`;
+        }
+        modal.style.display = 'flex';
+      } catch (err) {
+        showMessage('main-message', 'Gagal preview', true);
+      }
+    }
+    function closePreview() {
+      document.getElementById('preview-modal').style.display = 'none';
+    }
+
+    // Download
+    async function downloadFile(id) {
+      try {
+        const res = await fetch(`${BASE_URL}/files/download/${id}`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` },
+          redirect: 'follow'
+        });
+        if (res.status === 200 || res.redirected) {
+          window.open(res.url, '_blank');
+        } else {
+          const data = await res.json();
+          showMessage('main-message', data.msg || 'Gagal download', true);
+        }
+      } catch (err) {
+        showMessage('main-message', 'Gagal download', true);
+      }
+    }
+
+    // Delete
+    async function deleteFile(id) {
+      if (!confirm('Yakin ingin menghapus file ini?')) return;
+      try {
+        const res = await fetch(`${BASE_URL}/files/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        const data = await res.json();
+        if (res.status === 200) {
+          showMessage('main-message', 'File berhasil dihapus!');
+          refreshFiles();
+        } else {
+          showMessage('main-message', data.msg || 'Gagal hapus', true);
+        }
+      } catch (err) {
+        showMessage('main-message', 'Gagal hapus', true);
+      }
+    }
+
+    // Auto-login if user exists
+    window.onload = function() {
+      if (accessToken && currentUser) {
+        showMain();
+      } else {
+        document.getElementById('auth-section').classList.add('active');
+      }
+    }
+    // Close modal on click outside
+    document.getElementById('preview-modal').addEventListener('click', function(e) {
+      if (e.target === this) closePreview();
+    });
+  </script>
+</body>
+</html> 

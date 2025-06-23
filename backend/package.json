@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Backend untuk aplikasi file storage dengan Google Cloud Storage integration dan JWT refresh token authentication.",
   "dependencies": {
     "@google-cloud/storage": "^7.16.0",
     "bcrypt": "^6.0.0",
